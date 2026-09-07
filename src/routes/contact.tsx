@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { Layout } from "../components/Layout";
+import { supabase } from "@/integrations/supabase/client";
+
+const orderSchema = z.object({
+  name: z.string().trim().min(1, "Please enter your name").max(100),
+  phone: z.string().trim().min(6, "Please enter a valid phone number").max(30),
+  address: z.string().trim().min(3, "Please enter your address").max(300),
+  items: z.string().trim().min(3, "Please tell us what you'd like").max(1000),
+});
+
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
