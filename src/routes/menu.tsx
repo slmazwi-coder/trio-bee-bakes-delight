@@ -61,8 +61,7 @@ function Menu() {
         <div className="mx-auto max-w-6xl px-4 py-16 text-center">
           <h1 className="text-4xl font-bold">Our Bakes</h1>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            We bake fresh, soft and delicious — plus home-cooked meals made with love through
-            Luciano's Lunch Line.
+            We bake fresh, soft and delicious — every treat made with love by Trio Bee Bakes.
           </p>
         </div>
       </section>

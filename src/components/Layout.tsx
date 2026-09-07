@@ -91,7 +91,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <span className="font-display text-lg font-bold">Trio Bee Bakes</span>
             </div>
             <p className="mt-3 text-sm opacity-80">
-              Luciano's Lunch Line · Home-based bakery in Ibisi Township, Umzimkhulu. Fresh baking and delivery — baked with love since August 2021.
+              Trio Bee Bakes · Home-based bakery in Ibisi Township, Umzimkhulu. Fresh baking and delivery — baked with love since August 2021.
             </p>
           </div>
           <div>

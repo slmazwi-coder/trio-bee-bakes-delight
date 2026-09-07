@@ -32,7 +32,7 @@ function About() {
         <div className="mx-auto max-w-6xl px-4 py-16 text-center">
           <h1 className="text-4xl font-bold">About Trio Bee Bakes</h1>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Luciano's Lunch Line · Home-based bakery in Umzimkhulu, KwaZulu-Natal
+            Trio Bee Bakes · Home-based bakery in Umzimkhulu, KwaZulu-Natal
           </p>
         </div>
       </section>
