@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { Layout } from "../components/Layout";
+import { supabase } from "@/integrations/supabase/client";
+
+const orderSchema = z.object({
+  name: z.string().trim().min(1, "Please enter your name").max(100),
+  phone: z.string().trim().min(6, "Please enter a valid phone number").max(30),
+  address: z.string().trim().min(3, "Please enter your address").max(300),
+  items: z.string().trim().min(3, "Please tell us what you'd like").max(1000),
+});
+
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
@@ -25,6 +35,32 @@ export const Route = createFileRoute("/contact")({
 
 function Contact() {
   const [sent, setSent] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: "", phone: "", address: "", items: "" });
+
+  const update = (key: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    const parsed = orderSchema.safeParse(form);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? "Please check your details");
+      return;
+    }
+    setSaving(true);
+    const { error: insertError } = await supabase.from("orders").insert(parsed.data);
+    setSaving(false);
+    if (insertError) {
+      setError("Sorry, we couldn't send that. Please try again or call us on 078 730 7624.");
+      return;
+    }
+    setSent(true);
+  }
+
 
   return (
     <Layout>
@@ -88,18 +124,15 @@ function Contact() {
           ) : (
             <>
               <h2 className="text-2xl font-bold">Request an Order</h2>
-              <form
-                className="mt-6 space-y-4"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
-                }}
-              >
+              <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
                 <div>
                   <label htmlFor="name" className="text-sm font-semibold">Your name</label>
                   <input
                     id="name"
                     required
+                    maxLength={100}
+                    value={form.name}
+                    onChange={update("name")}
                     className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
                     placeholder="e.g. Nomvula Dlamini"
                   />
@@ -110,8 +143,23 @@ function Contact() {
                     id="phone"
                     type="tel"
                     required
+                    maxLength={30}
+                    value={form.phone}
+                    onChange={update("phone")}
                     className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
                     placeholder="e.g. 072 000 0000"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="address" className="text-sm font-semibold">Delivery address</label>
+                  <input
+                    id="address"
+                    required
+                    maxLength={300}
+                    value={form.address}
+                    onChange={update("address")}
+                    className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+                    placeholder="e.g. 12 Main Road, Ibisi, Umzimkhulu"
                   />
                 </div>
                 <div>
@@ -120,17 +168,25 @@ function Contact() {
                     id="order"
                     required
                     rows={4}
+                    maxLength={1000}
+                    value={form.items}
+                    onChange={update("items")}
                     className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
-                    placeholder="e.g. 1 birthday cake for Saturday, 2 dozen scones, delivery to Ibisi"
+                    placeholder="e.g. 1 birthday cake for Saturday, 2 dozen scones"
                   />
                 </div>
+                {error && (
+                  <p className="text-sm font-semibold text-destructive">{error}</p>
+                )}
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground transition-transform hover:scale-[1.02]"
+                  disabled={saving}
+                  className="w-full rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground transition-transform hover:scale-[1.02] disabled:opacity-60"
                 >
-                  Send Order Request
+                  {saving ? "Sending..." : "Send Order Request"}
                 </button>
               </form>
+
             </>
           )}
         </div>
