@@ -124,18 +124,15 @@ function Contact() {
           ) : (
             <>
               <h2 className="text-2xl font-bold">Request an Order</h2>
-              <form
-                className="mt-6 space-y-4"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
-                }}
-              >
+              <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
                 <div>
                   <label htmlFor="name" className="text-sm font-semibold">Your name</label>
                   <input
                     id="name"
                     required
+                    maxLength={100}
+                    value={form.name}
+                    onChange={update("name")}
                     className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
                     placeholder="e.g. Nomvula Dlamini"
                   />
@@ -146,8 +143,23 @@ function Contact() {
                     id="phone"
                     type="tel"
                     required
+                    maxLength={30}
+                    value={form.phone}
+                    onChange={update("phone")}
                     className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
                     placeholder="e.g. 072 000 0000"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="address" className="text-sm font-semibold">Delivery address</label>
+                  <input
+                    id="address"
+                    required
+                    maxLength={300}
+                    value={form.address}
+                    onChange={update("address")}
+                    className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+                    placeholder="e.g. 12 Main Road, Ibisi, Umzimkhulu"
                   />
                 </div>
                 <div>
@@ -156,17 +168,25 @@ function Contact() {
                     id="order"
                     required
                     rows={4}
+                    maxLength={1000}
+                    value={form.items}
+                    onChange={update("items")}
                     className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
-                    placeholder="e.g. 1 birthday cake for Saturday, 2 dozen scones, delivery to Ibisi"
+                    placeholder="e.g. 1 birthday cake for Saturday, 2 dozen scones"
                   />
                 </div>
+                {error && (
+                  <p className="text-sm font-semibold text-destructive">{error}</p>
+                )}
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground transition-transform hover:scale-[1.02]"
+                  disabled={saving}
+                  className="w-full rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground transition-transform hover:scale-[1.02] disabled:opacity-60"
                 >
-                  Send Order Request
+                  {saving ? "Sending..." : "Send Order Request"}
                 </button>
               </form>
+
             </>
           )}
         </div>
