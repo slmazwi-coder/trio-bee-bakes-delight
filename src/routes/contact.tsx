@@ -35,6 +35,32 @@ export const Route = createFileRoute("/contact")({
 
 function Contact() {
   const [sent, setSent] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: "", phone: "", address: "", items: "" });
+
+  const update = (key: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    const parsed = orderSchema.safeParse(form);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? "Please check your details");
+      return;
+    }
+    setSaving(true);
+    const { error: insertError } = await supabase.from("orders").insert(parsed.data);
+    setSaving(false);
+    if (insertError) {
+      setError("Sorry, we couldn't send that. Please try again or call us on 078 730 7624.");
+      return;
+    }
+    setSent(true);
+  }
+
 
   return (
     <Layout>
