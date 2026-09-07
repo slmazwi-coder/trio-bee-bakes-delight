@@ -59,8 +59,8 @@ function Home() {
               Fresh bakes, warm hearts — <span className="text-primary">Trio Bee Bakes</span>
             </h1>
             <p className="mt-4 max-w-md text-base text-muted-foreground md:text-lg">
-              Luciano's Lunch Line brings you home-cooked goodness from 177 Ibisi Township,
-              Umzimkhulu. We bake fresh, soft and delicious — and deliver it to your door.
+              Trio Bee Bakes brings you home-cooked goodness from 177 Ibisi Township, Umzimkhulu.
+              We bake fresh, soft and delicious — and deliver it to your door.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
